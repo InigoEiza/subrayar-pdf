@@ -2,6 +2,7 @@ import streamlit as st
 import fitz  # PyMuPDF
 from streamlit_drawable_canvas import st_canvas
 from io import BytesIO
+from PIL import Image  # 👈 añadir
 
 st.set_page_config(page_title="PDF Subrayador", layout="wide")
 
@@ -22,7 +23,7 @@ if uploaded_file:
     for page_num in range(len(doc)):
         page = doc[page_num]
         pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # mejor resolución
-        img = pix.tobytes("png")
+        img = Image.open(BytesIO(pix.tobytes("png")))  # 👈 FIX
 
         st.subheader(f"Página {page_num + 1}")
 
@@ -46,4 +47,3 @@ if uploaded_file:
             pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
             pix.save(f"pagina_{i+1}.png")
         st.success("Se guardaron las páginas con subrayados como PNG.")
-
